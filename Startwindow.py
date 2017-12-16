@@ -7,9 +7,12 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from funcs import *
+import gui
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.my_window = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(613, 473)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -18,16 +21,16 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.net_interfece = QtWidgets.QListWidget(self.centralwidget)
         self.net_interfece.setObjectName("net_interfece")
-        item = QtWidgets.QListWidgetItem()
-        self.net_interfece.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.net_interfece.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.net_interfece.addItem(item)
+        #########################################################################
+
+
+
+        ############################################################################
         self.gridLayout.addWidget(self.net_interfece, 0, 0, 1, 1)
         self.Start_capture = QtWidgets.QToolButton(self.centralwidget)
         self.Start_capture.setObjectName("Start_capture")
         self.gridLayout.addWidget(self.Start_capture, 1, 0, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 613, 21))
@@ -64,17 +67,25 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+
+        # add event handlers heres
+        self.Start_capture.clicked.connect(self.start_capture_btn_clicked)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         __sortingEnabled = self.net_interfece.isSortingEnabled()
         self.net_interfece.setSortingEnabled(False)
-        item = self.net_interfece.item(0)
-        item.setText(_translate("MainWindow", "Network Interfeces"))
-        item = self.net_interfece.item(1)
-        item.setText(_translate("MainWindow", "Wifi"))
-        item = self.net_interfece.item(2)
-        item.setText(_translate("MainWindow", "Ethernet"))
+
+
+        #################################################################
+        self.network_interfaces, self.mac_addresses = get_all_interfaces()
+        for ni in self.network_interfaces:
+            item = QtWidgets.QListWidgetItem()
+            self.net_interfece.addItem(item)
+            item.setText(_translate("MainWindow", ni))
+        #################################################################
+
         self.net_interfece.setSortingEnabled(__sortingEnabled)
         self.Start_capture.setText(_translate("MainWindow", "Start Capture"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
@@ -85,6 +96,21 @@ class Ui_MainWindow(object):
         self.actionStart.setText(_translate("MainWindow", "Start"))
         self.actionStopr.setText(_translate("MainWindow", "Stop"))
         self.actionRestart.setText(_translate("MainWindow", "Restart"))
+
+
+
+    def start_capture_btn_clicked(self):
+        selected_index = self.net_interfece.currentRow()
+        self.chosen_mac = self.mac_addresses[selected_index]
+
+        print(self.chosen_mac)
+        #########
+
+        self.newWindow = QtWidgets.QMainWindow()
+        self.new_ui = gui.Ui_capturing_window(self.chosen_mac)
+        self.new_ui.setupUi(self.newWindow)
+        self.newWindow.show()
+        self.my_window.hide()
 
 
 if __name__ == "__main__":
