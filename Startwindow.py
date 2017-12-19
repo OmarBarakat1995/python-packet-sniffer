@@ -37,18 +37,16 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
-        self.menuCapture = QtWidgets.QMenu(self.menubar)
-        self.menuCapture.setObjectName("menuCapture")
+
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtWidgets.QAction(MainWindow)
-        self.actionSave.setObjectName("actionSave")
-        self.actionExit = QtWidgets.QAction(MainWindow)
-        self.actionExit.setObjectName("actionExit")
+        self.actionOpen.triggered.connect(self.load_c)
+
+
         self.actionStart = QtWidgets.QAction(MainWindow)
         self.actionStart.setObjectName("actionStart")
         self.actionStopr = QtWidgets.QAction(MainWindow)
@@ -56,13 +54,11 @@ class Ui_MainWindow(object):
         self.actionRestart = QtWidgets.QAction(MainWindow)
         self.actionRestart.setObjectName("actionRestart")
         self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionExit)
-        self.menuCapture.addAction(self.actionStart)
-        self.menuCapture.addAction(self.actionStopr)
-        self.menuCapture.addAction(self.actionRestart)
+
+
+
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuCapture.menuAction())
+
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -73,7 +69,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "ASU-Shark"))
         __sortingEnabled = self.net_interfece.isSortingEnabled()
         self.net_interfece.setSortingEnabled(False)
 
@@ -89,10 +85,9 @@ class Ui_MainWindow(object):
         self.net_interfece.setSortingEnabled(__sortingEnabled)
         self.Start_capture.setText(_translate("MainWindow", "Start Capture"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.menuCapture.setTitle(_translate("MainWindow", "Capture"))
+
         self.actionOpen.setText(_translate("MainWindow", "Open"))
-        self.actionSave.setText(_translate("MainWindow", "Save"))
-        self.actionExit.setText(_translate("MainWindow", "Exit"))
+
         self.actionStart.setText(_translate("MainWindow", "Start"))
         self.actionStopr.setText(_translate("MainWindow", "Stop"))
         self.actionRestart.setText(_translate("MainWindow", "Restart"))
@@ -103,14 +98,39 @@ class Ui_MainWindow(object):
         selected_index = self.net_interfece.currentRow()
         self.chosen_mac = self.mac_addresses[selected_index]
 
-        print(self.chosen_mac)
+        #print(self.chosen_mac)
         #########
 
         self.newWindow = QtWidgets.QMainWindow()
-        self.new_ui = gui.Ui_capturing_window(self.chosen_mac)
+        self.new_ui = gui.Ui_capturing_window(self.chosen_mac, self.my_window)
         self.new_ui.setupUi(self.newWindow)
         self.newWindow.show()
         self.my_window.hide()
+
+
+
+
+
+
+    def load_c(self):
+        self.newWindow = QtWidgets.QMainWindow()
+        self.new_ui = gui.Ui_capturing_window(self.chosen_mac, self.my_window)
+        self.new_ui.setupUi(self.newWindow)
+        self.newWindow.show()
+        self.new_ui.load_c()
+        self.my_window.hide()
+
+
+    def load_err_msg(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setWindowTitle("Error Message")
+        msg.setText("File not found!")
+        msg.exec_()
+
+
+
+
 
 
 if __name__ == "__main__":
