@@ -16,7 +16,7 @@ from threading import Thread
 import time
 import datetime
 import socket
-import base64
+from input_dialogue import *
 
 class Ui_capturing_window():
     def __init__(self, mac):
@@ -90,12 +90,20 @@ class Ui_capturing_window():
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
+        self.actionOpen.triggered.connect(self.load_c)
+
+
         self.actionSave = QtWidgets.QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
+        self.actionSave.triggered.connect(self.save_c)
+
         self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
+
+
         self.actionStart = QtWidgets.QAction(MainWindow)
         self.actionStart.setObjectName("actionStart")
         self.actionStart.triggered.connect(self.start_c)
@@ -198,12 +206,11 @@ class Ui_capturing_window():
         b = p.show
         p.show()
         try:
-
-            raw_load = self.pckts[index][Raw].load
+            #raw_load = self.pckts[index][Raw].load
             #print("raw load:", type(raw_load), raw_load)
-            base64_load = base64.b64encode(raw_load)
+            #base64_load = base64.b64encode(raw_load)
             #print("base64 :", type(base64_load), base64_load )
-            hb = base64_load.decode()
+            #hb = base64_load.decode()
             #print("decoded :",type(hb), hb)
 
             e = str(b).index("<Raw")
@@ -226,7 +233,50 @@ class Ui_capturing_window():
         index = self.Packets_table.currentRow()
         print(index)
 
+    def save_c(self):
+        try:
+            dialouge_box = Dialouge()
+            self.file_name = dialouge_box. initUI()
+            wrpcap(self.file_name, self.pckts)
+        except:
+            self.save_err_msg()
 
+
+    def load_c(self):
+        try:
+            dialouge_box = Dialouge()
+            self.file_name = dialouge_box.initUI()
+
+            self.loadedPckts = rdpcap(self.file_name)
+
+            print(len(self.loadedPckts))
+
+            for p in self.loadedPckts:
+                rowPosition = self.Packets_table.rowCount()
+                self.Packets_table.insertRow(rowPosition)
+                self.Packets_table.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
+                self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
+                self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
+                self.Packets_table.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
+                self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
+
+        except:
+            self.load_err_msg()
+
+    def save_err_msg(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setWindowTitle("Error Message")
+        msg.setText("couldn't save file")
+        msg.exec_()
+
+
+    def load_err_msg(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setWindowTitle("Error Message")
+        msg.setText("File not found!")
+        msg.exec_()
 
 
 if __name__ == "__main__":
