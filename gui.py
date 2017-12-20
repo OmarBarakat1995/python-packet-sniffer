@@ -20,6 +20,7 @@ from input_dialogue import *
 
 class Ui_capturing_window():
     def __init__(self, mac, start_window):
+        print("Ui_capturing_window")
         self.chosen_mac = mac
         #print("constructoooooooooooooooooor")
         #print(self.chosen_mac)
@@ -186,17 +187,35 @@ class Ui_capturing_window():
 
         if f is None:
             for p in self.pckts:
-                self.sniffed_packet(p)
+                rowPosition = self.Packets_table.rowCount()
+                self.Packets_table.insertRow(rowPosition)
+                self.Packets_table.setItem(rowPosition, 0,
+                                           QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
+                self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
+                self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
+                self.Packets_table.setItem(rowPosition, 3,
+                                           QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
+                self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
 
         else:
             for p in self.pckts:
                 search_here = [p.sport, p.dport, str(self.ip_protocols[int(p[IP].proto)]), p[IP].src, p[IP].dst]
                 if f in search_here:
-                    self.sniffed_packet(p)
+                    rowPosition = self.Packets_table.rowCount()
+                    self.Packets_table.insertRow(rowPosition)
+                    self.Packets_table.setItem(rowPosition, 0,
+                                               QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
+                    self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
+                    self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
+                    self.Packets_table.setItem(rowPosition, 3,
+                                               QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
+                    self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
 
 
 
     def start_c(self):
+        if self.chosen_mac is None:
+            self.back_c()
         #print("yessssssss")
         self.capturing_status = True
         sniffer = Thread(target=self.threaded_sniff_target)
@@ -273,6 +292,7 @@ class Ui_capturing_window():
 
 
     def load_c(self):
+        print("load_c 2")
         try:
             dialouge_box = Dialouge()
             self.file_name = dialouge_box.initUI()
@@ -280,7 +300,15 @@ class Ui_capturing_window():
             self.pckts = rdpcap(self.file_name)
             self.clear_c()
             for p in self.pckts:
-                self.sniffed_packet(p)
+                rowPosition = self.Packets_table.rowCount()
+                self.Packets_table.insertRow(rowPosition)
+                self.Packets_table.setItem(rowPosition, 0,
+                                           QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
+                self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
+                self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
+                self.Packets_table.setItem(rowPosition, 3,
+                                           QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
+                self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
 
         except:
             self.load_err_msg()
@@ -303,7 +331,7 @@ class Ui_capturing_window():
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Critical)
         msg.setWindowTitle("Error Message")
-        msg.setText("File not found!")
+        msg.setText("select an existing file to be loaded")
         msg.exec_()
 
 

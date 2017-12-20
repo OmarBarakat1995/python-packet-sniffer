@@ -21,6 +21,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.net_interfece = QtWidgets.QListWidget(self.centralwidget)
         self.net_interfece.setObjectName("net_interfece")
+
         #########################################################################
 
 
@@ -98,6 +99,7 @@ class Ui_MainWindow(object):
         selected_index = self.net_interfece.currentRow()
         self.chosen_mac = self.mac_addresses[selected_index]
 
+
         #print(self.chosen_mac)
         #########
 
@@ -113,11 +115,17 @@ class Ui_MainWindow(object):
 
 
     def load_c(self):
+        #print("load_c 1")
         self.newWindow = QtWidgets.QMainWindow()
-        self.new_ui = gui.Ui_capturing_window(self.chosen_mac, self.my_window)
+        #print("aaaaaaaaa")
+        self.new_ui = gui.Ui_capturing_window(None, self.my_window)
+        #print("bbbbbbbbbbbbbbb")
         self.new_ui.setupUi(self.newWindow)
+        #print("ccccccccccccccc")
         self.newWindow.show()
+        #print("ddddddd")
         self.new_ui.load_c()
+        #print("eeeeeee")
         self.my_window.hide()
 
 

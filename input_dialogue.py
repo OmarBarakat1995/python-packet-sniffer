@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon
 
 
@@ -25,12 +25,13 @@ class Dialouge(QWidget):
 
 
     def getText(self):
-        text, okPressed = QInputDialog.getText(self, "File Name", "File Name:", QLineEdit.Normal, "")
-        if okPressed and text != '':
-            return text
+        text, okPressed = QFileDialog.getOpenFileName(self, 'Open file','c:\\', )
+        print(text)
+        return text
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Dialouge()
-    sys.exit(app.exec_())
+    dialouge_box = Dialouge()
+    file_name = dialouge_box.initUI()
+    #sys.exit(app.exec_())
