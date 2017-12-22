@@ -14,21 +14,27 @@ class Dialouge(QWidget):
         self.width = 640
         self.height = 480
 
-    def initUI(self):
+    def initUI(self,save=False):
         """
         initializes the dialogue box and returns the user input as string
         """
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         #print(self.getText())
-        return self.getText()
+        if save==False:
+            return self.get_load_path()
+        else:
+            return self.get_save_path()
 
-
-    def getText(self):
+    def get_load_path(self):
         text, okPressed = QFileDialog.getOpenFileName(self, 'Open file','c:\\', )
         print(text)
         return text
 
+    def get_save_path(self):
+        text, okPressed = QFileDialog.getSaveFileName()
+        print(text)
+        return text
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

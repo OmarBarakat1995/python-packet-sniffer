@@ -20,7 +20,7 @@ from input_dialogue import *
 
 class Ui_capturing_window():
     def __init__(self, mac, start_window):
-        print("Ui_capturing_window")
+        #print("Ui_capturing_window")
         self.chosen_mac = mac
         #print("constructoooooooooooooooooor")
         #print(self.chosen_mac)
@@ -285,14 +285,14 @@ class Ui_capturing_window():
     def save_c(self):
         try:
             dialouge_box = Dialouge()
-            self.file_name = dialouge_box. initUI()
+            self.file_name = dialouge_box. initUI(save=True)
             wrpcap(self.file_name, self.pckts)
         except:
             self.save_err_msg()
 
 
     def load_c(self):
-        print("load_c 2")
+        #print("load_c 2")
         try:
             dialouge_box = Dialouge()
             self.file_name = dialouge_box.initUI()

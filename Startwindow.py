@@ -84,7 +84,7 @@ class Ui_MainWindow(object):
         #################################################################
 
         self.net_interfece.setSortingEnabled(__sortingEnabled)
-        self.Start_capture.setText(_translate("MainWindow", "Start Capture"))
+        self.Start_capture.setText(_translate("MainWindow", "Select Network Interface"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
 
         self.actionOpen.setText(_translate("MainWindow", "Open"))
@@ -108,9 +108,6 @@ class Ui_MainWindow(object):
         self.new_ui.setupUi(self.newWindow)
         self.newWindow.show()
         self.my_window.hide()
-
-
-
 
 
 
