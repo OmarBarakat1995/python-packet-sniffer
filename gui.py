@@ -187,20 +187,7 @@ class Ui_capturing_window():
 
         if f is None:
             for p in self.pckts:
-                rowPosition = self.Packets_table.rowCount()
-                self.Packets_table.insertRow(rowPosition)
-                self.Packets_table.setItem(rowPosition, 0,
-                                           QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
-                self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
-                self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
-                self.Packets_table.setItem(rowPosition, 3,
-                                           QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
-                self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
-
-        else:
-            for p in self.pckts:
-                search_here = [p.sport, p.dport, str(self.ip_protocols[int(p[IP].proto)]), p[IP].src, p[IP].dst]
-                if f in search_here:
+                try:
                     rowPosition = self.Packets_table.rowCount()
                     self.Packets_table.insertRow(rowPosition)
                     self.Packets_table.setItem(rowPosition, 0,
@@ -210,8 +197,25 @@ class Ui_capturing_window():
                     self.Packets_table.setItem(rowPosition, 3,
                                                QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
                     self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
+                except:
+                    pass
+        else:
+            for p in self.pckts:
+                try:
+                    search_here = [p.sport, p.dport, str(self.ip_protocols[int(p[IP].proto)]), p[IP].src, p[IP].dst]
+                    if f in search_here:
+                        rowPosition = self.Packets_table.rowCount()
+                        self.Packets_table.insertRow(rowPosition)
+                        self.Packets_table.setItem(rowPosition, 0,
+                                                   QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(p.time))))
+                        self.Packets_table.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(p[IP].src))
+                        self.Packets_table.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(p[IP].dst))
+                        self.Packets_table.setItem(rowPosition, 3,
+                                                   QtWidgets.QTableWidgetItem(self.ip_protocols[int(p[IP].proto)]))
+                        self.Packets_table.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(p[IP].len)))
 
-
+                except:
+                    pass
 
     def start_c(self):
         if self.chosen_mac is None:
